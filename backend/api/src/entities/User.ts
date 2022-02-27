@@ -61,7 +61,7 @@ export class User extends BaseEntity {
 	@Column('text')
 	password: string
 
-	@Field(() => Date)
+	@Field(() => String)
 	@Column('date')
 	born: Date
 
