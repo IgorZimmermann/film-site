@@ -1,3 +1,4 @@
+import { IsDate, Length } from 'class-validator'
 import { Field, ID, InputType, ObjectType } from 'type-graphql'
 import {
 	BaseEntity,
@@ -7,6 +8,8 @@ import {
 	PrimaryGeneratedColumn,
 	UpdateDateColumn,
 } from 'typeorm'
+import { Cast } from './Cast'
+import { MediaStudio } from './MediaStudio'
 
 /*
 Table Media {
@@ -76,33 +79,41 @@ export class Media extends BaseEntity {
 	@Column('text', { array: true })
 	keywords: string[]
 
-	@Field(() => [String])
-	@Column('text', { array: true })
-	cameras: string[]
+	@Field(() => [Cast])
+	casts: Cast[]
 
-	@Field(() => [String])
-	@Column('text', { array: true })
-	lenses: string[]
+	@Field(() => [MediaStudio])
+	studios: MediaStudio[]
 }
 
 @InputType()
 export class MediaInput {
 	@Field(() => String)
+	@Length(1, 255)
 	title: string
 
 	@Field(() => String)
+	@Length(1, 255)
 	url: string
 
 	@Field(() => String)
+	@Length(80, 200, {
+		message: 'Length must be between 80 and 200 characters long',
+	})
 	tagline: string
 
 	@Field(() => String)
+	@Length(130, 500, {
+		message: 'Length must be between 130 and 500 characters long',
+	})
 	overview: string
 
-	@Field(() => String)
+	@Field(() => Date)
+	@IsDate()
 	release_date: Date
 
-	@Field(() => String)
+	@Field(() => Date)
+	@IsDate()
 	available_from: Date
 
 	@Field(() => String)
@@ -113,12 +124,6 @@ export class MediaInput {
 
 	@Field(() => [String])
 	keywords: string[]
-
-	@Field(() => [String])
-	cameras: string[]
-
-	@Field(() => [String])
-	lenses: string[]
 }
 
 @InputType()
@@ -149,10 +154,10 @@ export class MediaUpdateInput {
 
 	@Field(() => [String], { nullable: true })
 	keywords?: string[]
+}
 
-	@Field(() => [String], { nullable: true })
-	cameras?: string[]
-
-	@Field(() => [String], { nullable: true })
-	lenses?: string[]
+@InputType()
+export class getMediaByUrlInput {
+	@Field(() => String)
+	url: string
 }
