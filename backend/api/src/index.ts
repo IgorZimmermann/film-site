@@ -6,7 +6,14 @@ import 'reflect-metadata'
 import { buildSchema } from 'type-graphql'
 import { createConnection, getConnectionOptions } from 'typeorm'
 import { redis } from './redis'
+import { CastResolver } from './resolvers/CastResolver'
+import { CollectionResolver } from './resolvers/CollectionResolver'
 import { HelloWorldResolver } from './resolvers/HelloWorldResolver'
+import { MediaCollectionResolver } from './resolvers/MediaCollectionResolver'
+import { MediaResolver } from './resolvers/MediaResolver'
+import { MediaStudioResolver } from './resolvers/MediaStudioResolver'
+import { PersonResolver } from './resolvers/PersonResolver'
+import { StudioResolver } from './resolvers/StudioResolver'
 import { UserResolver } from './resolvers/UserResolver'
 import { Context } from './types/Context'
 
@@ -20,7 +27,17 @@ const main = async () => {
 
 	const apolloServer = new ApolloServer({
 		schema: await buildSchema({
-			resolvers: [HelloWorldResolver, UserResolver],
+			resolvers: [
+				HelloWorldResolver,
+				UserResolver,
+				MediaResolver,
+				PersonResolver,
+				CastResolver,
+				CollectionResolver,
+				StudioResolver,
+				MediaStudioResolver,
+				MediaCollectionResolver,
+			],
 			validate: true,
 		}),
 		context: ({ req, res }: Context) => ({ req, res }),
