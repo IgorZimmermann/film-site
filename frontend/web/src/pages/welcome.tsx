@@ -1,9 +1,10 @@
 import type { NextPage } from 'next'
 import styled from 'styled-components'
+import { PageWrapper } from '../components/PageWrapper'
 
 const WelcomeWrapper = styled.div`
 	background-color: #1f1f1f;
-	background-image: url('/welcome_background.png');
+	background-image: url('/images/welcome_background.png');
 	background-size: cover;
 	height: 100vh;
 	width: 100%;
@@ -26,11 +27,13 @@ const LogoText = styled.span`
 
 const Welcome: NextPage = () => {
 	return (
-		<WelcomeWrapper>
-			<WelcomeText>
-				Welcome to <LogoText>Luni Film</LogoText>
-			</WelcomeText>
-		</WelcomeWrapper>
+		<PageWrapper title="Welcome | Luni Film">
+			<WelcomeWrapper>
+				<WelcomeText>
+					Welcome to <LogoText>Luni Film</LogoText>
+				</WelcomeText>
+			</WelcomeWrapper>
+		</PageWrapper>
 	)
 }
 
