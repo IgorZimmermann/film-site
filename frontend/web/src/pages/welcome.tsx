@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import styled from 'styled-components'
 import { PageWrapper } from '../components/PageWrapper'
 
@@ -27,13 +28,23 @@ const LogoText = styled.span`
 
 const Welcome: NextPage = () => {
 	return (
-		<PageWrapper title="Welcome | Luni Film">
-			<WelcomeWrapper>
-				<WelcomeText>
-					Welcome to <LogoText>Luni Film</LogoText>
-				</WelcomeText>
-			</WelcomeWrapper>
-		</PageWrapper>
+		<>
+			<Head>
+				<meta property="og:title" content="Welcome | Luni Film" />
+				<meta property="og:url" content="https://film.byluni.com/welcome" />
+				<meta
+					property="og:image"
+					content="https://film.byluni.com/images/welcome_background.png"
+				/>
+			</Head>
+			<PageWrapper title="Welcome | Luni Film">
+				<WelcomeWrapper>
+					<WelcomeText>
+						Welcome to <LogoText>Luni Film</LogoText>
+					</WelcomeText>
+				</WelcomeWrapper>
+			</PageWrapper>
+		</>
 	)
 }
 
