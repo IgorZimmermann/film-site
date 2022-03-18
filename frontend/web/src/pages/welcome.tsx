@@ -34,7 +34,7 @@ const Welcome: NextPage = () => {
 				<meta property="og:url" content="https://film.byluni.com/welcome" />
 				<meta
 					property="og:image"
-					content="https://film.byluni.com/images/welcome_background.png"
+					content="https://film.byluni.com/images/welcome_background.jpg"
 				/>
 			</Head>
 			<PageWrapper title="Welcome | Luni Film">
