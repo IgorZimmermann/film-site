@@ -1,0 +1,17 @@
+{
+	"Next Page": {
+		"scope": "typescriptreact",
+		"prefix": "np",
+		"body": [
+			"import type { NextPage } from 'next'",
+			"",
+			"const $1: NextPage = () => {",
+			"\treturn (",
+			"\t\t$2",
+			"\t)",
+			"}",
+			"",
+			"export default $1"
+		]
+	}
+}
