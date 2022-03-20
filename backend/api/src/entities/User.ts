@@ -1,4 +1,4 @@
-import { IsDate, IsEmail, Length, MinDate, MinLength } from 'class-validator'
+import { IsEmail, Length, MinLength } from 'class-validator'
 import { Field, ID, InputType, ObjectType, Root } from 'type-graphql'
 import {
 	BaseEntity,
@@ -61,10 +61,6 @@ export class User extends BaseEntity {
 	@Column('text')
 	password: string
 
-	@Field(() => String)
-	@Column('date')
-	born: Date
-
 	@Field(() => [String])
 	@Column('text', { array: true, default: [] })
 	roles: string[]
@@ -104,12 +100,6 @@ export class RegisterInput {
 	@MinLength(8, { message: 'password is not long enough' })
 	@Column('text')
 	password: string
-
-	@Field(() => Date)
-	@IsDate()
-	@MinDate(new Date('1992-01-01'))
-	@Column('date')
-	born: Date
 }
 
 @InputType()

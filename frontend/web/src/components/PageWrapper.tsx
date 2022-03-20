@@ -1,5 +1,10 @@
 import Head from 'next/head'
 import React from 'react'
+import styled from 'styled-components'
+
+const Body = styled.div`
+	min-height: 100vh;
+`
 
 interface PageWrapperProps {
 	title?: string
@@ -34,8 +39,14 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
 				<meta name="msapplication-TileColor" content="#da532c" />
 				<meta name="theme-color" content="#ffffff" />
 				<title>{title || 'Luni Film'}</title>
+
+				<meta name="og:title" content={title || 'Luni Film'} />
+				<meta
+					name="og:image"
+					content="https://film.byluni.com/welcome_background.jpg"
+				/>
 			</Head>
-			{children}
+			<Body>{children}</Body>
 		</>
 	)
 }
