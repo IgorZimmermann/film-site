@@ -1,5 +1,6 @@
 import { ApolloServer } from 'apollo-server-express'
 import connectRedis from 'connect-redis'
+import cors from 'cors'
 import express from 'express'
 import session from 'express-session'
 import 'reflect-metadata'
@@ -44,6 +45,14 @@ const main = async () => {
 	})
 
 	const RedisStore = connectRedis(session)
+
+	app.set('trust proxy', 1)
+	app.use(
+		cors({
+			origin: process.env.CORS_ORIGIN!,
+			credentials: true,
+		})
+	)
 
 	app.use(
 		session({
