@@ -36,6 +36,7 @@ export type CastInput = {
 export type Collection = {
   __typename?: 'Collection';
   available_from: Scalars['String'];
+  description: Scalars['String'];
   id: Scalars['ID'];
   medias: Array<MediaCollection>;
   title: Scalars['String'];
@@ -44,6 +45,7 @@ export type Collection = {
 
 export type CollectionInput = {
   available_from: Scalars['String'];
+  description: Scalars['String'];
   title: Scalars['String'];
   type: Scalars['String'];
 };
@@ -228,6 +230,8 @@ export type Query = {
   getAllMediaStudio: Array<MediaStudio>;
   getAllPerson: Array<Person>;
   getAllStudio: Array<Studio>;
+  getCollectionById?: Maybe<Collection>;
+  getMediaById?: Maybe<Media>;
   getMediaByUrl?: Maybe<Media>;
   getPersonByUrl?: Maybe<Person>;
   getStudioByUrl?: Maybe<Studio>;
@@ -235,6 +239,16 @@ export type Query = {
   hello: Scalars['String'];
   homepage: Array<Homepage>;
   me?: Maybe<User>;
+};
+
+
+export type QueryGetCollectionByIdArgs = {
+  options: GetCollectionByIdInput;
+};
+
+
+export type QueryGetMediaByIdArgs = {
+  options: GetMediaByIdInput;
 };
 
 
@@ -295,6 +309,14 @@ export type User = {
   roles: Array<Scalars['String']>;
 };
 
+export type GetCollectionByIdInput = {
+  id: Scalars['String'];
+};
+
+export type GetMediaByIdInput = {
+  id: Scalars['String'];
+};
+
 export type GetMediaByUrlInput = {
   url: Scalars['String'];
 };
@@ -302,6 +324,8 @@ export type GetMediaByUrlInput = {
 export type GetUserByEmailInput = {
   email: Scalars['String'];
 };
+
+export type MediaFragment = { __typename?: 'Media', id: string, title: string, url: string, tagline: string, overview: string, release_date: string, available_from: string, isAvailable: boolean, original_language: string, country_of_origin: string, keywords: Array<string> };
 
 export type LoginMutationVariables = Exact<{
   options: LoginInput;
@@ -322,12 +346,45 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register?: { __typename?: 'User', id: string } | null };
 
+export type HomepageQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type HomepageQuery = { __typename?: 'Query', homepage: Array<{ __typename?: 'Homepage', type: string, data: string }> };
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string, name: string, first_name: string, last_name: string, email: string, roles: Array<string> } | null };
 
+export type GetCollectionByIdQueryVariables = Exact<{
+  options: GetCollectionByIdInput;
+}>;
 
+
+export type GetCollectionByIdQuery = { __typename?: 'Query', getCollectionById?: { __typename?: 'Collection', id: string, type: string, title: string, available_from: string, description: string, medias: Array<{ __typename?: 'MediaCollection', media?: { __typename?: 'Media', id: string, title: string, url: string } | null }> } | null };
+
+export type GetMediaByIdQueryVariables = Exact<{
+  options: GetMediaByIdInput;
+}>;
+
+
+export type GetMediaByIdQuery = { __typename?: 'Query', getMediaById?: { __typename?: 'Media', id: string, title: string, url: string, tagline: string, available_from: string, isAvailable: boolean } | null };
+
+export const MediaFragmentDoc = gql`
+    fragment Media on Media {
+  id
+  title
+  url
+  tagline
+  overview
+  release_date
+  available_from
+  isAvailable
+  original_language
+  country_of_origin
+  keywords
+}
+    `;
 export const LoginDocument = gql`
     mutation Login($options: LoginInput!) {
   login(options: $options) {
@@ -424,6 +481,41 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const HomepageDocument = gql`
+    query Homepage {
+  homepage {
+    type
+    data
+  }
+}
+    `;
+
+/**
+ * __useHomepageQuery__
+ *
+ * To run a query within a React component, call `useHomepageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useHomepageQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useHomepageQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useHomepageQuery(baseOptions?: Apollo.QueryHookOptions<HomepageQuery, HomepageQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<HomepageQuery, HomepageQueryVariables>(HomepageDocument, options);
+      }
+export function useHomepageLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<HomepageQuery, HomepageQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<HomepageQuery, HomepageQueryVariables>(HomepageDocument, options);
+        }
+export type HomepageQueryHookResult = ReturnType<typeof useHomepageQuery>;
+export type HomepageLazyQueryHookResult = ReturnType<typeof useHomepageLazyQuery>;
+export type HomepageQueryResult = Apollo.QueryResult<HomepageQuery, HomepageQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -463,3 +555,89 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const GetCollectionByIdDocument = gql`
+    query GetCollectionById($options: getCollectionByIdInput!) {
+  getCollectionById(options: $options) {
+    id
+    type
+    title
+    available_from
+    description
+    medias {
+      media {
+        id
+        title
+        url
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCollectionByIdQuery__
+ *
+ * To run a query within a React component, call `useGetCollectionByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollectionByIdQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useGetCollectionByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>(GetCollectionByIdDocument, options);
+      }
+export function useGetCollectionByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>(GetCollectionByIdDocument, options);
+        }
+export type GetCollectionByIdQueryHookResult = ReturnType<typeof useGetCollectionByIdQuery>;
+export type GetCollectionByIdLazyQueryHookResult = ReturnType<typeof useGetCollectionByIdLazyQuery>;
+export type GetCollectionByIdQueryResult = Apollo.QueryResult<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>;
+export const GetMediaByIdDocument = gql`
+    query GetMediaById($options: getMediaByIdInput!) {
+  getMediaById(options: $options) {
+    id
+    title
+    url
+    tagline
+    available_from
+    isAvailable
+  }
+}
+    `;
+
+/**
+ * __useGetMediaByIdQuery__
+ *
+ * To run a query within a React component, call `useGetMediaByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMediaByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMediaByIdQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useGetMediaByIdQuery(baseOptions: Apollo.QueryHookOptions<GetMediaByIdQuery, GetMediaByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMediaByIdQuery, GetMediaByIdQueryVariables>(GetMediaByIdDocument, options);
+      }
+export function useGetMediaByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMediaByIdQuery, GetMediaByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMediaByIdQuery, GetMediaByIdQueryVariables>(GetMediaByIdDocument, options);
+        }
+export type GetMediaByIdQueryHookResult = ReturnType<typeof useGetMediaByIdQuery>;
+export type GetMediaByIdLazyQueryHookResult = ReturnType<typeof useGetMediaByIdLazyQuery>;
+export type GetMediaByIdQueryResult = Apollo.QueryResult<GetMediaByIdQuery, GetMediaByIdQueryVariables>;

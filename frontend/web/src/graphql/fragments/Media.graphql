@@ -1,0 +1,13 @@
+fragment Media on Media {
+	id
+	title
+	url
+	tagline
+	overview
+	release_date
+	available_from
+	isAvailable
+	original_language
+	country_of_origin
+	keywords
+}

@@ -8,7 +8,12 @@ import {
 	UseMiddleware,
 } from 'type-graphql'
 import { Cast } from '../entities/Cast'
-import { getMediaByUrlInput, Media, MediaInput } from '../entities/Media'
+import {
+	getMediaByIdInput,
+	getMediaByUrlInput,
+	Media,
+	MediaInput,
+} from '../entities/Media'
 import { MediaStudio } from '../entities/MediaStudio'
 import { isEditor } from '../middlewares/hasPermission'
 import { isAuth } from '../middlewares/isAuth'
@@ -34,6 +39,17 @@ export class MediaResolver {
 		@Arg('options', () => getMediaByUrlInput) options: getMediaByUrlInput
 	): Promise<Media | null> {
 		const media = await Media.findOne({ where: { url: options.url } })
+		if (!media) {
+			return null
+		}
+		return media
+	}
+
+	@Query(() => Media, { nullable: true })
+	async getMediaById(
+		@Arg('options', () => getMediaByIdInput) options: getMediaByIdInput
+	): Promise<Media | null> {
+		const media = await Media.findOne({ where: { id: options.id } })
 		if (!media) {
 			return null
 		}

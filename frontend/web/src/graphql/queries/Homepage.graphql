@@ -1,0 +1,6 @@
+query Homepage {
+	homepage {
+		type
+		data
+	}
+}

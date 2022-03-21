@@ -7,7 +7,11 @@ import {
 	Root,
 	UseMiddleware,
 } from 'type-graphql'
-import { Collection, CollectionInput } from '../entities/Collection'
+import {
+	Collection,
+	CollectionInput,
+	getCollectionByIdInput,
+} from '../entities/Collection'
 import { MediaCollection } from '../entities/MediaCollection'
 import { isAdmin, isEditor } from '../middlewares/hasPermission'
 import { isAuth } from '../middlewares/isAuth'
@@ -23,6 +27,18 @@ export class CollectionResolver {
 			return null
 		}
 		return mediaCollections
+	}
+
+	@Query(() => Collection, { nullable: true })
+	async getCollectionById(
+		@Arg('options', () => getCollectionByIdInput)
+		options: getCollectionByIdInput
+	) {
+		const collection = await Collection.findOne({ where: { id: options.id } })
+		if (!collection) {
+			return null
+		}
+		return collection
 	}
 
 	@Query(() => [Collection])

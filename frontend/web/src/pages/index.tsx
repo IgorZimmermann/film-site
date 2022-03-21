@@ -1,18 +1,29 @@
 import type { NextPage } from 'next'
-import { useMeQuery } from '../generated/graphql'
+import { Collection } from '../components/Focus/Collection'
+import { Media } from '../components/Focus/Media'
+import { Wrapper } from '../components/Focus/Wrapper'
+import { PageWrapper } from '../components/PageWrapper'
+import { useHomepageQuery } from '../generated/graphql'
 import { useIsAuth } from '../utils/useIsAuth'
 
 const Home: NextPage = () => {
 	useIsAuth()
-	const { data, loading } = useMeQuery()
+	const { data, loading } = useHomepageQuery()
 	return (
-		<>
-			{loading && !data?.me ? (
-				<h1>hello world</h1>
+		<PageWrapper title="Home | Luni Film">
+			{loading && !data ? (
+				<span>loading...</span>
 			) : (
-				<h1>hello, {data?.me?.first_name}</h1>
+				<Wrapper>
+					{data?.homepage.map((x) => (
+						<div key={x.data}>
+							{x.type === 'media' && <Media id={x.data} />}
+							{x.type === 'collection' && <Collection id={x.data} />}
+						</div>
+					))}
+				</Wrapper>
 			)}
-		</>
+		</PageWrapper>
 	)
 }
 

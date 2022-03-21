@@ -46,6 +46,10 @@ export class Collection extends BaseEntity {
 	@Column('date')
 	available_from: Date
 
+	@Field(() => String)
+	@Column('text')
+	description: string
+
 	@Field(() => [MediaCollection])
 	medias: MediaCollection[]
 }
@@ -60,4 +64,13 @@ export class CollectionInput {
 
 	@Field(() => String)
 	available_from: Date
+
+	@Field(() => String)
+	description: string
+}
+
+@InputType()
+export class getCollectionByIdInput {
+	@Field(() => String)
+	id: string
 }

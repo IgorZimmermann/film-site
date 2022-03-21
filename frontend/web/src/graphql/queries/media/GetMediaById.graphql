@@ -1,0 +1,10 @@
+query GetMediaById($options: getMediaByIdInput!) {
+	getMediaById(options: $options) {
+		id
+		title
+		url
+		tagline
+		available_from
+		isAvailable
+	}
+}

@@ -2,11 +2,16 @@ import argon2 from 'argon2'
 import {
 	Arg,
 	Ctx,
+	Field,
+	ID,
 	Mutation,
+	ObjectType,
 	Query,
 	Resolver,
 	UseMiddleware,
 } from 'type-graphql'
+import { Collection } from '../entities/Collection'
+import { Media } from '../entities/Media'
 import {
 	getUserByEmailInput,
 	LoginInput,
@@ -17,6 +22,15 @@ import {
 import { isAdmin } from '../middlewares/hasPermission'
 import { isAuth } from '../middlewares/isAuth'
 import { Context } from '../types/Context'
+
+@ObjectType()
+class Homepage {
+	@Field(() => String)
+	type: string
+
+	@Field(() => ID)
+	data: string
+}
 
 @Resolver()
 export class UserResolver {
@@ -127,5 +141,22 @@ export class UserResolver {
 			return null
 		}
 		return user
+	}
+
+	@Query(() => [Homepage])
+	@UseMiddleware(isAuth)
+	async homepage(): Promise<Homepage[]> {
+		const homepage: Homepage[] = []
+		const media = await Media.findOne({
+			order: { createdAt: 'DESC' },
+		})
+		homepage.push({ type: 'media', data: media!.id })
+		const collections = await Collection.find({
+			order: { createdAt: 'DESC' },
+		})
+		collections.slice(0, 3).forEach((collection) => {
+			homepage.push({ type: 'collection', data: collection.id })
+		})
+		return homepage
 	}
 }

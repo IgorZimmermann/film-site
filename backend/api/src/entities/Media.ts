@@ -1,5 +1,6 @@
 import { IsDate, Length } from 'class-validator'
-import { Field, ID, InputType, ObjectType } from 'type-graphql'
+import moment from 'moment'
+import { Field, ID, InputType, ObjectType, Root } from 'type-graphql'
 import {
 	BaseEntity,
 	Column,
@@ -67,6 +68,11 @@ export class Media extends BaseEntity {
 	@Column('date')
 	available_from: Date
 
+	@Field(() => Boolean)
+	isAvailable(@Root() parent: Media) {
+		return moment(parent.available_from).isBefore()
+	}
+
 	@Field(() => String)
 	@Column('text')
 	original_language: string
@@ -97,13 +103,13 @@ export class MediaInput {
 	url: string
 
 	@Field(() => String)
-	@Length(80, 200, {
+	@Length(80, 300, {
 		message: 'Length must be between 80 and 200 characters long',
 	})
 	tagline: string
 
 	@Field(() => String)
-	@Length(130, 500, {
+	@Length(130, 700, {
 		message: 'Length must be between 130 and 500 characters long',
 	})
 	overview: string
@@ -160,4 +166,10 @@ export class MediaUpdateInput {
 export class getMediaByUrlInput {
 	@Field(() => String)
 	url: string
+}
+
+@InputType()
+export class getMediaByIdInput {
+	@Field(() => String)
+	id: string
 }

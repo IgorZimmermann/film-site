@@ -1,0 +1,16 @@
+query GetCollectionById($options: getCollectionByIdInput!) {
+	getCollectionById(options: $options) {
+		id
+		type
+		title
+		available_from
+		description
+		medias {
+			media {
+				id
+				title
+				url
+			}
+		}
+	}
+}
