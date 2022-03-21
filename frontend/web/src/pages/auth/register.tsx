@@ -20,18 +20,32 @@ const Register: NextPage = () => {
 					password: '',
 				}}
 				onSubmit={async (values, { setErrors }) => {
-					const response = await register({
-						variables: {
-							options: {
-								email: values.email,
-								first_name: values.first_name,
-								last_name: values.last_name,
-								password: values.password,
+					try {
+						const response = await register({
+							variables: {
+								options: {
+									email: values.email,
+									first_name: values.first_name,
+									last_name: values.last_name,
+									password: values.password,
+								},
 							},
-						},
-					})
-					if (response.data?.register !== null && response.data?.register) {
-						router.push('/auth/login')
+						})
+						if (response.data?.register !== null && response.data?.register) {
+							router.push('/auth/login')
+						}
+					} catch (err: any) {
+						const errors: { [key: string]: string } = {}
+						err.graphQLErrors[0].extensions.exception.validationErrors.forEach(
+							(validationErr: any) => {
+								Object.values(validationErr.constraints).forEach(
+									(message: any) => {
+										errors[validationErr.property] = message
+									}
+								)
+							}
+						)
+						setErrors(errors)
 					}
 				}}
 			>

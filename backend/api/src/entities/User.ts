@@ -69,11 +69,11 @@ export class User extends BaseEntity {
 @InputType()
 export class LoginInput {
 	@Field(() => String)
-	@IsEmail()
+	@IsEmail({ message: 'Must be a valid email address' })
 	email: string
 
 	@Field(() => String)
-	@MinLength(8)
+	@MinLength(8, { message: 'Password is not long enough' })
 	password: string
 }
 
@@ -91,13 +91,13 @@ export class RegisterInput {
 
 	@Field(() => String)
 	@Length(1, 255)
-	@IsEmail()
-	@IsEmailAvailable({ message: 'email is already in use' })
+	@IsEmail({ message: 'Must be a valid email address' })
+	@IsEmailAvailable({ message: 'Email is already in use' })
 	@Column('text', { unique: true })
 	email: string
 
 	@Field(() => String)
-	@MinLength(8, { message: 'password is not long enough' })
+	@MinLength(8, { message: 'Password is not long enough' })
 	@Column('text')
 	password: string
 }

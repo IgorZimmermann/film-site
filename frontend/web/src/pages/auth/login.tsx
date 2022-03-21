@@ -15,21 +15,35 @@ const Login: NextPage = () => {
 			<Formik
 				initialValues={{ email: '', password: '' }}
 				onSubmit={async (values, { setErrors }) => {
-					const response = await login({
-						variables: {
-							options: {
-								email: values.email,
-								password: values.password,
+					try {
+						const response = await login({
+							variables: {
+								options: {
+									email: values.email,
+									password: values.password,
+								},
 							},
-						},
-					})
-					if (response.data?.login === null || !response.data?.login) {
-						setErrors({
-							email: 'Invalid email or password',
-							password: 'Invalid email or password',
 						})
-					} else {
-						router.push('/')
+						if (response.data?.login === null || !response.data?.login) {
+							setErrors({
+								email: 'Invalid email or password',
+								password: 'Invalid email or password',
+							})
+						} else {
+							router.push('/')
+						}
+					} catch (err: any) {
+						const errors: { [key: string]: string } = {}
+						err.graphQLErrors[0].extensions.exception.validationErrors.forEach(
+							(validationErr: any) => {
+								Object.values(validationErr.constraints).forEach(
+									(message: any) => {
+										errors[validationErr.property] = message
+									}
+								)
+							}
+						)
+						setErrors(errors)
 					}
 				}}
 			>
