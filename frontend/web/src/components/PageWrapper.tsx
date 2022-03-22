@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React from 'react'
 import styled from 'styled-components'
+import { Navbar } from './Navbar'
 
 const Body = styled.div`
 	min-height: 100vh;
@@ -8,11 +9,13 @@ const Body = styled.div`
 
 interface PageWrapperProps {
 	title?: string
+	navbar?: boolean
 }
 
 export const PageWrapper: React.FC<PageWrapperProps> = ({
 	children,
 	title,
+	navbar,
 }) => {
 	return (
 		<>
@@ -20,22 +23,29 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
 				<link
 					rel="apple-touch-icon"
 					sizes="180x180"
-					href="/apple-touch-icon.png"
+					href={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/apple-touch-icon.png`}
 				/>
 				<link
 					rel="icon"
 					type="image/png"
 					sizes="32x32"
-					href="/favicon-32x32.png"
+					href={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/favicon-32x32.png`}
 				/>
 				<link
 					rel="icon"
 					type="image/png"
 					sizes="16x16"
-					href="/favicon-16x16.png"
+					href={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/favicon-16x16.png`}
 				/>
-				<link rel="manifest" href="/site.webmanifest" />
-				<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+				<link
+					rel="manifest"
+					href={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/site.webmanifest`}
+				/>
+				<link
+					rel="mask-icon"
+					href={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/safari-pinned-tab.svg`}
+					color="#ffffff"
+				/>
 				<meta name="msapplication-TileColor" content="#da532c" />
 				<meta name="theme-color" content="#ffffff" />
 				<title>{title || 'Luni Film'}</title>
@@ -46,7 +56,10 @@ export const PageWrapper: React.FC<PageWrapperProps> = ({
 					content="https://film.byluni.com/welcome_background.jpg"
 				/>
 			</Head>
-			<Body>{children}</Body>
+			<Body>
+				{navbar && <Navbar />}
+				{children}
+			</Body>
 		</>
 	)
 }
