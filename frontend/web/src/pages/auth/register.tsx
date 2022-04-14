@@ -11,7 +11,7 @@ const Register: NextPage = () => {
 	const router = useRouter()
 	const [register] = useRegisterMutation()
 	return (
-		<PageWrapper>
+		<PageWrapper title="Register">
 			<Formik
 				initialValues={{
 					email: '',

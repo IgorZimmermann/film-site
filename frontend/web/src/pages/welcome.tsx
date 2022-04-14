@@ -3,9 +3,9 @@ import NextLink from 'next/link'
 import styled from 'styled-components'
 import { PageWrapper } from '../components/PageWrapper'
 
-const WelcomeWrapper = styled.div`
+const WelcomeWrapper = styled.div<{ src: string }>`
 	background-color: #1f1f1f;
-	background-image: url('/images/welcome_background.png');
+	background-image: url(${(props) => props.src});
 	background-size: cover;
 	height: 100vh;
 	width: 100%;
@@ -51,8 +51,10 @@ const WelcomeButton = styled.a`
 
 const Welcome: NextPage = () => {
 	return (
-		<PageWrapper title="Welcome | Luni Film">
-			<WelcomeWrapper>
+		<PageWrapper title="Welcome">
+			<WelcomeWrapper
+				src={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/welcome_background.png`}
+			>
 				<WelcomeTextWrapper>
 					<WelcomeText>
 						Welcome to <LogoText>Luni Film</LogoText>

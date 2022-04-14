@@ -10,7 +10,7 @@ const Home: NextPage = () => {
 	useIsAuth()
 	const { data, loading } = useHomepageQuery()
 	return (
-		<PageWrapper title="Home | Luni Film" navbar={true}>
+		<PageWrapper title="Home" navbar={true}>
 			{loading && !data ? (
 				<span>loading...</span>
 			) : (

@@ -11,7 +11,7 @@ const Login: NextPage = () => {
 	const router = useRouter()
 	const [login] = useLoginMutation()
 	return (
-		<PageWrapper title="Login | Luni Film">
+		<PageWrapper title="Login">
 			<Formik
 				initialValues={{ email: '', password: '' }}
 				onSubmit={async (values, { setErrors }) => {

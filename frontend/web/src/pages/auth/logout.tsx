@@ -10,7 +10,7 @@ const Logout: NextPage = () => {
 	const router = useRouter()
 	const [logout] = useLogoutMutation()
 	return (
-		<PageWrapper title="Logout | Luni Film">
+		<PageWrapper title="Logout">
 			<Formik
 				initialValues={{}}
 				onSubmit={async () => {
