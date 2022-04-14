@@ -9,8 +9,4 @@ export const Content = styled.div<{ img: string }>`
 	background-image: url(${(props) => props.img});
 	background-size: cover;
 	background-position: center;
-
-	&:last-child {
-		margin-bottom: 40px;
-	}
 `

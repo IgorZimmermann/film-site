@@ -74,6 +74,10 @@ const MediaWrapper = styled.div`
 	bottom: 40px;
 	left: 40px;
 	width: calc(100% - 80px);
+`
+
+const MediaRowWrapper = styled.div`
+	width: 100%;
 	display: flex;
 	flex-direction: row;
 	overflow-x: scroll;
@@ -147,31 +151,35 @@ export const Collection: React.FC<CollectionProps> = ({ id }) => {
 							</MetaWrapper>
 						)}
 						<MediaWrapper>
-							{data?.getCollectionById?.medias.map((x, i) => (
-								<Media
-									key={i}
-									id={x.media?.id}
-									active={showMedia && media?.getMediaById?.id === x.media?.id}
-									src={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/${x.media?.id}/cover2.jpg`}
-									onClick={() => {
-										if (
-											!showMedia ||
-											(media && media.getMediaById?.id !== x.media?.id)
-										) {
-											setShowMedia(true)
-											getMedia({
-												variables: {
-													options: {
-														id: x.media?.id!,
-													},
-												},
-											})
-										} else {
-											setShowMedia(false)
+							<MediaRowWrapper>
+								{data?.getCollectionById?.medias.map((x, i) => (
+									<Media
+										key={i}
+										id={x.media?.id}
+										active={
+											showMedia && media?.getMediaById?.id === x.media?.id
 										}
-									}}
-								/>
-							))}
+										src={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/${x.media?.id}/cover2.jpg`}
+										onClick={() => {
+											if (
+												!showMedia ||
+												(media && media.getMediaById?.id !== x.media?.id)
+											) {
+												setShowMedia(true)
+												getMedia({
+													variables: {
+														options: {
+															id: x.media?.id!,
+														},
+													},
+												})
+											} else {
+												setShowMedia(false)
+											}
+										}}
+									/>
+								))}
+							</MediaRowWrapper>
 						</MediaWrapper>
 					</MetaGradient>
 				</Content>

@@ -24,7 +24,7 @@ const ErrorWrapper = styled.div`
 const ErrorText = styled.h1`
 	font-size: 150px;
 	font-weight: 700;
-	font-family: 'JetBrains Mono', monospace;
+	font-family: 'Inter', sans-serif;
 	color: #ffffff;
 	margin: 0;
 `
@@ -65,7 +65,7 @@ const ErrorVideoCaption = styled.p`
 
 const Custom404: NextPage = () => {
 	return (
-		<PageWrapper title={'404 | Luni Film'}>
+		<PageWrapper title={'404'}>
 			<ErrorPageWrapper>
 				<ErrorWrapper>
 					<ErrorText>404</ErrorText>
