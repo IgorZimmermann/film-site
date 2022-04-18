@@ -10,7 +10,6 @@ const Button = styled(Field)`
 	text-align: center;
 	border: none;
 	border: 1.5px solid #ffffff;
-	font-family: 'Inter', sans-serif;
 	font-size: 17px;
 	font-weight: 600;
 `

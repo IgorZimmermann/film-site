@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import {
@@ -41,7 +42,6 @@ const MetaTitle = styled.div<{ src: string }>`
 const MetaTagline = styled.p`
 	font-size: 16px;
 	font-weight: 400;
-	font-family: 'Inter', sans-serif;
 	color: #ffffff;
 	margin: 0;
 	margin-bottom: 15px;
@@ -60,13 +60,13 @@ const MetaButtonWrapper = styled.div`
 const MetaButton = styled.a`
 	font-size: 15px;
 	font-weight: 600;
-	font-family: 'Inter', sans-serif;
 	color: ${(props) => (props.theme === 'light' ? '#1f1f1f' : '#ffffff')};
 	background-color: ${(props) =>
 		props.theme === 'light' ? '#ffffff' : '#00000059'};
 	width: 45%;
 	padding: 15px 0;
 	text-align: center;
+	text-decoration: none;
 `
 
 const MediaWrapper = styled.div`
@@ -146,7 +146,9 @@ export const Collection: React.FC<CollectionProps> = ({ id }) => {
 								<MetaTagline>{media?.getMediaById?.tagline}</MetaTagline>
 								<MetaButtonWrapper>
 									<MetaButton theme={'light'}>Play Movie</MetaButton>
-									<MetaButton>More Info</MetaButton>
+									<Link href={`/media/${media?.getMediaById?.url}`} passHref>
+										<MetaButton>More Info</MetaButton>
+									</Link>
 								</MetaButtonWrapper>
 							</MetaWrapper>
 						)}

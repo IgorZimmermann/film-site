@@ -36,7 +36,6 @@ const NavbarLinkWrapper = styled.div<{ align: string }>`
 const NavbarLink = styled.a<{ selected: boolean }>`
 	font-size: 15px;
 	font-weight: ${(props) => props.selected && '700'};
-	font-family: 'Inter', sans-serif;
 	color: #1f1f1f;
 	text-decoration: none;
 `
@@ -57,10 +56,10 @@ const Logo = styled.a`
 `
 
 const BetaTag = styled.span`
-	font-size: 13px;
+	font-size: 20px;
 	font-weight: 400;
 	text-transform: lowercase;
-	font-family: 'JetBrains Mono', monospace;
+	font-family: 'VT323', monospace;
 	color: #1f1f1f;
 `
 

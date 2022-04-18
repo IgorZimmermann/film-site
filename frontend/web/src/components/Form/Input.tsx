@@ -15,7 +15,6 @@ const FieldWrapper = styled.div<{ isError: boolean }>`
 
 const Field = styled(FormikField)<{ isError: boolean }>`
 	font-size: 15px;
-	font-family: 'Inter', sans-serif;
 	width: 100%;
 	color: ${(props) => (props.isError ? '#ff6464' : '#ffffff')};
 	border: none;
@@ -46,14 +45,12 @@ const LabelWrapper = styled.div`
 const Label = styled.label`
 	font-size: 15px;
 	font-weight: 400;
-	font-family: 'Inter', sans-serif;
 	color: #ffffff;
 `
 
 const Description = styled.span<{ isError: boolean }>`
 	font-size: 15px;
 	font-weight: 400;
-	font-family: 'Inter', sans-serif;
 	color: ${(props) => (props.isError ? '#ff6464' : '#ffffffbf')};
 	white-space: nowrap;
 `

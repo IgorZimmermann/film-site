@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 import styled from 'styled-components'
 import { useGetMediaByIdQuery } from '../../generated/graphql'
@@ -38,7 +39,6 @@ const MetaTitle = styled.div<{ src: string }>`
 const MetaTagline = styled.p`
 	font-size: 16px;
 	font-weight: 400;
-	font-family: 'Inter', sans-serif;
 	color: #ffffff;
 	margin: 0;
 	margin-bottom: 15px;
@@ -57,13 +57,13 @@ const MetaButtonWrapper = styled.div`
 const MetaButton = styled.a`
 	font-size: 15px;
 	font-weight: 600;
-	font-family: 'Inter', sans-serif;
 	color: ${(props) => (props.theme === 'light' ? '#1f1f1f' : '#ffffff')};
 	background-color: ${(props) =>
 		props.theme === 'light' ? '#ffffff' : '#00000059'};
 	width: 45%;
 	padding: 15px 0;
 	text-align: center;
+	text-decoration: none;
 `
 
 interface MediaProps {
@@ -94,7 +94,9 @@ export const Media: React.FC<MediaProps> = ({ id }) => {
 							<MetaTagline>{data?.getMediaById?.tagline}</MetaTagline>
 							<MetaButtonWrapper>
 								<MetaButton theme={'light'}>Play Movie</MetaButton>
-								<MetaButton>More Info</MetaButton>
+								<Link href={`/media/${data?.getMediaById?.url}`} passHref>
+									<MetaButton>More Info</MetaButton>
+								</Link>
 							</MetaButtonWrapper>
 						</MetaWrapper>
 					</MetaGradient>

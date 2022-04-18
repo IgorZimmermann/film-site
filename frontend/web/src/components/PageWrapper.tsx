@@ -5,6 +5,7 @@ import { Navbar } from './Navbar'
 
 const Body = styled.div`
 	min-height: 100vh;
+	font-family: 'Roboto Condensed', sans-serif;
 `
 
 interface PageWrapperProps {

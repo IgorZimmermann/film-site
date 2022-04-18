@@ -21,7 +21,6 @@ const Form = styled(FormikForm)`
 `
 
 const FormTitle = styled.h1`
-	font-family: 'Inter', sans-serif;
 	font-size: 40px;
 	font-weight: 700;
 	margin: 0;
