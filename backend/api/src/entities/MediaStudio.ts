@@ -21,11 +21,9 @@ export class MediaStudio extends BaseEntity {
 	@UpdateDateColumn()
 	updatedAt: Date
 
-	@Field(() => ID)
 	@Column('text')
 	studioId: string
 
-	@Field(() => ID)
 	@Column('text')
 	mediaId: string
 }

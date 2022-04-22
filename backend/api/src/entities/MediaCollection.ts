@@ -21,11 +21,9 @@ export class MediaCollection extends BaseEntity {
 	@UpdateDateColumn()
 	updatedAt: Date
 
-	@Field(() => ID)
 	@Column('text')
 	collectionId: string
 
-	@Field(() => ID)
 	@Column('text')
 	mediaId: string
 

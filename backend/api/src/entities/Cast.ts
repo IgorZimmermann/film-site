@@ -32,11 +32,9 @@ export class Cast extends BaseEntity {
 	@UpdateDateColumn()
 	updatedAt: Date
 
-	@Field(() => ID)
 	@Column('text')
 	personId: string
 
-	@Field(() => ID)
 	@Column('text')
 	mediaId: string
 
