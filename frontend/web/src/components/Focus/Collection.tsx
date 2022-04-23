@@ -82,6 +82,13 @@ const MediaRowWrapper = styled.div`
 	flex-direction: row;
 	overflow-x: scroll;
 
+	scrollbar-width: none;
+	-ms-overflow-style: -ms-autohiding-scrollbar;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
 	& :not(:last-child) {
 		margin-right: 10px;
 	}
