@@ -12,25 +12,6 @@ import {
 import { Cast } from './Cast'
 import { MediaStudio } from './MediaStudio'
 
-/*
-Table Media {
-  id text [pk, unique]
-  updatedAt date
-  createdAt date
-  title text
-  url text [unique]
-  tagline text
-  overview text
-  release_date date
-  available_from date
-  original_language text
-  country_of_origin text
-  keywords "text[]"
-  cameras "text[]"
-  lenses "text[]"
-}
-*/
-
 @ObjectType()
 @Entity()
 export class Media extends BaseEntity {

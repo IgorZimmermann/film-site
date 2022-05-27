@@ -14,6 +14,7 @@ import { MediaCollectionResolver } from './resolvers/MediaCollectionResolver'
 import { MediaResolver } from './resolvers/MediaResolver'
 import { MediaStudioResolver } from './resolvers/MediaStudioResolver'
 import { PersonResolver } from './resolvers/PersonResolver'
+import { SourceResolver } from './resolvers/SourceResolver'
 import { StudioResolver } from './resolvers/StudioResolver'
 import { UserResolver } from './resolvers/UserResolver'
 import { Context } from './types/Context'
@@ -38,6 +39,7 @@ const main = async () => {
 				StudioResolver,
 				MediaStudioResolver,
 				MediaCollectionResolver,
+				SourceResolver,
 			],
 			validate: true,
 		}),
