@@ -1,0 +1,30 @@
+query GetMediaByUrl($options: getMediaByUrlInput!) {
+	getMediaByUrl(options: $options) {
+		id
+		title
+		url
+		tagline
+		overview
+		release_date
+		available_from
+		isAvailable
+		original_language
+		country_of_origin
+		keywords
+		casts {
+			person {
+				id
+				name
+				url
+			}
+			role
+		}
+		studios {
+			studio {
+				short_name
+				name
+				url
+			}
+		}
+	}
+}

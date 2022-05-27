@@ -1,0 +1,16 @@
+query GetSourceById($options: GetSourceByIdInput!) {
+	getSourceById(options: $options) {
+		id
+		title
+		mediaId
+		type
+		src
+		thumbnail
+		subtitles {
+			id
+			src
+			lang
+			language
+		}
+	}
+}

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import {
@@ -6,6 +5,7 @@ import {
 	useGetMediaByIdLazyQuery,
 } from '../../generated/graphql'
 import { Content } from './Content'
+import { Media as MediaFocus } from './Media'
 
 const MetaWrapper = styled.div`
 	display: flex;
@@ -37,6 +37,15 @@ const MetaTitle = styled.div<{ src: string }>`
 	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
+`
+
+const MetaTitleText = styled.h1`
+	font-size: 50px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 700;
+	max-width: 400px;
+	color: #ffffff;
+	margin-bottom: 15px;
 `
 
 const MetaTagline = styled.p`
@@ -128,7 +137,7 @@ export const Collection: React.FC<CollectionProps> = ({ id }) => {
 	return (
 		<div>
 			{loading && !data ? (
-				<span>loading</span>
+				<span>loading...</span>
 			) : (
 				<Content
 					img={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/${
@@ -146,18 +155,7 @@ export const Collection: React.FC<CollectionProps> = ({ id }) => {
 								</MetaTagline>
 							</MetaWrapper>
 						) : (
-							<MetaWrapper>
-								<MetaTitle
-									src={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/${media.getMediaById?.id}/title.png`}
-								/>
-								<MetaTagline>{media?.getMediaById?.tagline}</MetaTagline>
-								<MetaButtonWrapper>
-									<MetaButton theme={'light'}>Play Movie</MetaButton>
-									<Link href={`/media/${media?.getMediaById?.url}`} passHref>
-										<MetaButton>More Info</MetaButton>
-									</Link>
-								</MetaButtonWrapper>
-							</MetaWrapper>
+							<MediaFocus id={media.getMediaById?.id as string} collection />
 						)}
 						<MediaWrapper>
 							<MediaRowWrapper>

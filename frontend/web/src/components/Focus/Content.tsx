@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-export const Content = styled.div<{ img: string }>`
-	height: calc(100vh - 80px);
+export const Content = styled.div<{ img: string; small?: boolean }>`
+	height: calc(${(props) => (props.small ? '80vh' : '100vh')} - 80px);
 	width: 100%;
 	margin-top: 40px;
 	position: relative;

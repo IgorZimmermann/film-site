@@ -1,0 +1,10 @@
+query GetSourceByMedia($options: GetSourceByMediaInput!) {
+	getSourceByMedia(options: $options) {
+		id
+		title
+		mediaId
+		type
+		src
+		thumbnail
+	}
+}

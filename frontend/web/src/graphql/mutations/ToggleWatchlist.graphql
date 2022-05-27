@@ -1,0 +1,3 @@
+mutation ToggleWatchlist($options: WatchlistInput!) {
+	toggleWatchlist(options: $options)
+}

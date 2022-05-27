@@ -1,0 +1,9 @@
+query GetWatchlist {
+	getWatchlist {
+		id
+		media {
+			id
+			url
+		}
+	}
+}

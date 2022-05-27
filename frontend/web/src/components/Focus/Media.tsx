@@ -1,14 +1,22 @@
+import moment from 'moment'
 import Link from 'next/link'
 import React from 'react'
 import styled from 'styled-components'
-import { useGetMediaByIdQuery } from '../../generated/graphql'
+import {
+	GetIsWatchlistDocument,
+	SourceType,
+	useGetIsWatchlistQuery,
+	useGetMediaByIdQuery,
+	useGetSourceByMediaQuery,
+	useToggleWatchlistMutation,
+} from '../../generated/graphql'
 import { Content } from './Content'
 
-const MetaWrapper = styled.div`
+const MetaWrapper = styled.div<{ top?: boolean }>`
 	display: flex;
 	flex-direction: column;
 	position: absolute;
-	bottom: 40px;
+	${(props) => (props.top ? 'top: 40px;' : 'bottom: 40px;')}
 	left: 40px;
 	width: 450px;
 `
@@ -34,6 +42,15 @@ const MetaTitle = styled.div<{ src: string }>`
 	background-size: contain;
 	background-position: left bottom;
 	background-repeat: no-repeat;
+`
+
+const MetaTitleText = styled.h1`
+	font-size: 50px;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 700;
+	max-width: 400px;
+	color: #ffffff;
+	margin-bottom: 15px;
 `
 
 const MetaTagline = styled.p`
@@ -64,44 +81,146 @@ const MetaButton = styled.a`
 	padding: 15px 0;
 	text-align: center;
 	text-decoration: none;
+
+	&:hover {
+		cursor: pointer;
+	}
 `
 
 interface MediaProps {
 	id: string
+	small?: boolean
+	collection?: boolean
 }
 
-export const Media: React.FC<MediaProps> = ({ id }) => {
-	const { data, loading } = useGetMediaByIdQuery({
+export const Media: React.FC<MediaProps> = ({ id, small, collection }) => {
+	const { loading, data } = useGetMediaByIdQuery({
 		variables: {
 			options: {
 				id,
 			},
 		},
 	})
+
+	const { loading: sourceLoading, data: sourceData } = useGetSourceByMediaQuery(
+		{
+			variables: {
+				options: {
+					mediaId: id,
+					type: SourceType.Movie,
+				},
+			},
+		}
+	)
+
+	const { loading: watchlistLoading, data: watchlistData } =
+		useGetIsWatchlistQuery({
+			variables: {
+				options: {
+					mediaId: id,
+				},
+			},
+		})
+
+	const [toggleWatchlist] = useToggleWatchlistMutation()
+
 	return (
-		<div>
+		<>
 			{loading && !data ? (
-				<span>loading</span>
+				<span>loading...</span>
 			) : (
 				<Content
 					img={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/${id}/cover1.jpg`}
+					small={small}
 				>
 					<MetaGradient>
-						<MetaWrapper>
+						<MetaWrapper top={collection}>
 							<MetaTitle
 								src={`${process.env.NEXT_PUBLIC_CONTENT_SRC}/${id}/title.png`}
 							/>
 							<MetaTagline>{data?.getMediaById?.tagline}</MetaTagline>
 							<MetaButtonWrapper>
-								<MetaButton theme={'light'}>Play Movie</MetaButton>
-								<Link href={`/media/${data?.getMediaById?.url}`} passHref>
-									<MetaButton>More Info</MetaButton>
-								</Link>
+								{data?.getMediaById?.isAvailable ? (
+									<>
+										{!sourceLoading &&
+										sourceData &&
+										sourceData.getSourceByMedia ? (
+											<>
+												{sourceData.getSourceByMedia === null ||
+												sourceData.getSourceByMedia.length === 0 ? (
+													<MetaButton theme={'light'}>Unavailable</MetaButton>
+												) : (
+													<Link
+														href={`/player/${sourceData?.getSourceByMedia[0].id}?from=/media/${data?.getMediaById?.url}`}
+														passHref
+													>
+														<MetaButton theme={'light'}>Play Movie</MetaButton>
+													</Link>
+												)}
+											</>
+										) : (
+											<MetaButton theme={'light'}>Loading</MetaButton>
+										)}
+									</>
+								) : (
+									<MetaButton theme={'light'}>
+										Available from{' '}
+										{moment(data?.getMediaById?.available_from).format(
+											'DD MMMM'
+										)}
+									</MetaButton>
+								)}
+
+								{collection ? (
+									<Link href={`/media/${data?.getMediaById?.url}`} passHref>
+										<MetaButton>More Info</MetaButton>
+									</Link>
+								) : (
+									<>
+										{!watchlistLoading && watchlistData ? (
+											<>
+												{watchlistData.isWatchlist === true ? (
+													<MetaButton
+														onClick={async () => {
+															await toggleWatchlist({
+																variables: {
+																	options: {
+																		mediaId: id,
+																	},
+																},
+																refetchQueries: [GetIsWatchlistDocument],
+															})
+														}}
+													>
+														Remove from Watchlist
+													</MetaButton>
+												) : (
+													<MetaButton
+														onClick={async () => {
+															await toggleWatchlist({
+																variables: {
+																	options: {
+																		mediaId: id,
+																	},
+																},
+																refetchQueries: [GetIsWatchlistDocument],
+															})
+														}}
+													>
+														Add to Watchlist
+													</MetaButton>
+												)}
+											</>
+										) : (
+											<MetaButton>Loading</MetaButton>
+										)}
+									</>
+								)}
 							</MetaButtonWrapper>
 						</MetaWrapper>
 					</MetaGradient>
 				</Content>
 			)}
-		</div>
+		</>
 	)
 }

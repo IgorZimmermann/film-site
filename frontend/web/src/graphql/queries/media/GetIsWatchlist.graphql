@@ -1,0 +1,3 @@
+query GetIsWatchlist($options: WatchlistInput!) {
+	isWatchlist(options: $options)
+}

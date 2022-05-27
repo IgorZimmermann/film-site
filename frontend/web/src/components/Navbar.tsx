@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
+import { useMeQuery } from '../generated/graphql'
 
 const Nav = styled.nav`
 	height: 40px;
@@ -26,6 +27,7 @@ const NavbarLinkWrapper = styled.div<{ align: string }>`
 	display: flex;
 	flex-direction: row;
 	justify-content: ${(props) => props.align};
+	align-items: center;
 	width: 40%;
 
 	& :not(:last-child) {
@@ -55,11 +57,10 @@ const Logo = styled.a`
 	background-repeat: no-repeat;
 `
 
-const BetaTag = styled.span`
-	font-size: 20px;
+const User = styled.span`
+	font-size: 15px;
 	font-weight: 400;
 	text-transform: lowercase;
-	font-family: 'VT323', monospace;
 	color: #1f1f1f;
 `
 
@@ -67,6 +68,8 @@ interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = () => {
 	const router = useRouter()
+	const { loading, data } = useMeQuery()
+
 	return (
 		<Nav>
 			<NavbarWrapper>
@@ -86,7 +89,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 					</Link>
 				</LogoWrapper>
 				<NavbarLinkWrapper align="right">
-					<BetaTag>beta</BetaTag>
+					{!loading && data && data.me && <User>{data.me.first_name}</User>}
 				</NavbarLinkWrapper>
 			</NavbarWrapper>
 		</Nav>
