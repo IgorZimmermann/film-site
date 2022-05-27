@@ -19,6 +19,7 @@ import {
 	RegisterInput,
 	User,
 } from '../entities/User'
+import { Watchlist, WatchlistInput } from '../entities/Watchlist'
 import { isAdmin } from '../middlewares/hasPermission'
 import { isAuth } from '../middlewares/isAuth'
 import { Context } from '../types/Context'
@@ -158,5 +159,52 @@ export class UserResolver {
 			homepage.push({ type: 'collection', data: collection.id })
 		})
 		return homepage
+	}
+
+	@Query(() => [Watchlist])
+	@UseMiddleware(isAuth)
+	async getWatchlist(@Ctx() ctx: Context): Promise<Watchlist[]> {
+		const userId = ctx.req.session.userId
+		const watchlists = await Watchlist.find({ where: { userId: userId } })
+		return watchlists
+	}
+
+	@Query(() => Boolean)
+	@UseMiddleware(isAuth)
+	async isWatchlist(
+		@Arg('options', () => WatchlistInput) options: WatchlistInput,
+		@Ctx() ctx: Context
+	): Promise<boolean> {
+		const userId = ctx.req.session.userId
+		const watchlist = await Watchlist.findOne({
+			where: { userId, mediaId: options.mediaId },
+		})
+		if (watchlist) {
+			return true
+		} else {
+			return false
+		}
+	}
+
+	@Mutation(() => Boolean)
+	@UseMiddleware(isAuth)
+	async toggleWatchlist(
+		@Arg('options', () => WatchlistInput) options: WatchlistInput,
+		@Ctx() ctx: Context
+	): Promise<boolean> {
+		const userId = ctx.req.session.userId
+		const watchlistExists = await Watchlist.findOne({
+			where: { userId, mediaId: options.mediaId },
+		})
+		if (watchlistExists) {
+			await watchlistExists.remove()
+			return false
+		} else {
+			await Watchlist.create({
+				mediaId: options.mediaId,
+				userId: userId,
+			}).save()
+			return true
+		}
 	}
 }
