@@ -209,7 +209,9 @@ export class UserResolver {
 	@Query(() => [Progress])
 	async getProgress(@Ctx() ctx: Context): Promise<Progress[]> {
 		const userId = ctx.req.session.userId
-		const progress = await Progress.find({ where: { userId } })
+		const progress = (await Progress.find({ where: { userId } })).filter(
+			(x) => x.duration * 0.95 > x.progress
+		)
 		return progress
 	}
 
@@ -222,7 +224,7 @@ export class UserResolver {
 		const progress = await Progress.findOne({
 			where: { userId, mediaSourceId: options.mediaSourceId },
 		})
-		if (progress) {
+		if (progress && progress.duration * 0.95 > progress.progress) {
 			return progress
 		} else {
 			return null
