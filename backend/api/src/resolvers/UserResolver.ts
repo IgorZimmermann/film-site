@@ -12,6 +12,7 @@ import {
 } from 'type-graphql'
 import { Collection } from '../entities/Collection'
 import { Media } from '../entities/Media'
+import { IsProgressInput, Progress, ProgressInput } from '../entities/Progress'
 import {
 	getUserByEmailInput,
 	LoginInput,
@@ -201,6 +202,50 @@ export class UserResolver {
 				userId: userId,
 			}).save()
 			return true
+		}
+	}
+
+	@Query(() => [Progress])
+	async getProgress(@Ctx() ctx: Context): Promise<Progress[]> {
+		const userId = ctx.req.session.userId
+		const progress = await Progress.find({ where: { userId } })
+		return progress
+	}
+
+	@Query(() => Progress, { nullable: true })
+	async isProgress(
+		@Arg('options', () => IsProgressInput) options: IsProgressInput,
+		@Ctx() ctx: Context
+	): Promise<Progress | null> {
+		const userId = ctx.req.session.userId
+		const progress = await Progress.findOne({
+			where: { userId, mediaSourceId: options.mediaSourceId },
+		})
+		if (progress) {
+			return progress
+		} else {
+			return null
+		}
+	}
+
+	@Mutation(() => Progress)
+	async updateProgress(
+		@Arg('options', () => ProgressInput) options: ProgressInput,
+		@Ctx() ctx: Context
+	): Promise<Progress> {
+		const userId = ctx.req.session.userId
+		let progress = await Progress.findOne({
+			where: { userId, mediaSourceId: options.mediaSourceId },
+		})
+		if (progress) {
+			await Progress.update({ id: progress.id }, { ...options })
+			progress = await Progress.findOne({
+				where: { userId, mediaSourceId: options.mediaSourceId },
+			})
+			return progress!
+		} else {
+			progress = await Progress.create({ ...options, userId }).save()
+			return progress
 		}
 	}
 }
