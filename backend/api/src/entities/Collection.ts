@@ -9,18 +9,6 @@ import {
 } from 'typeorm'
 import { MediaCollection } from './MediaCollection'
 
-/*
-Table Collections {
-  id text [pk, unique]
-  updatedAt date
-  createdAt date
-  type collection_type
-  title text
-  available_from datetime
-  medias "text[]" [ref: > Media.id]
-}
-*/
-
 @ObjectType()
 @Entity()
 export class Collection extends BaseEntity {
@@ -49,6 +37,10 @@ export class Collection extends BaseEntity {
 	@Field(() => String)
 	@Column('text')
 	description: string
+
+	@Field(() => Boolean)
+	@Column('boolean', { default: false })
+	featured: boolean
 
 	@Field(() => [MediaCollection])
 	medias: MediaCollection[]

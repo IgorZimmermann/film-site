@@ -66,6 +66,10 @@ export class Media extends BaseEntity {
 	@Column('text', { array: true })
 	keywords: string[]
 
+	@Field(() => Boolean)
+	@Column('boolean', { default: false })
+	featured: boolean
+
 	@Field(() => [Cast])
 	casts: Cast[]
 

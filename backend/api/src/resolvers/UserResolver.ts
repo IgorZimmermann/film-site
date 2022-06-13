@@ -148,16 +148,12 @@ export class UserResolver {
 	@UseMiddleware(isAuth)
 	async homepage(): Promise<Homepage[]> {
 		const homepage: Homepage[] = []
-		const media = await Media.findOne({
-			order: { createdAt: 'DESC' },
-		})
-		homepage.push({ type: 'media', data: media!.id })
-		const collections = await Collection.find({
-			order: { createdAt: 'DESC' },
-		})
-		collections.slice(0, 3).forEach((collection) => {
-			homepage.push({ type: 'collection', data: collection.id })
-		})
+		const medias = await Media.find({ where: { featured: true } })
+		medias.forEach((x) => homepage.push({ type: 'media', data: x.id }))
+		const collections = await Collection.find({ where: { featured: true } })
+		collections.forEach((x) =>
+			homepage.push({ type: 'collection', data: x.id })
+		)
 		return homepage
 	}
 
