@@ -8,6 +8,7 @@ import {
 	SourceType,
 	useGetIsWatchlistQuery,
 	useGetSourceByMediaQuery,
+	useIsProgressLazyQuery,
 	useToggleWatchlistMutation,
 } from '../../generated/graphql'
 
@@ -71,6 +72,11 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ data, subtitle }) => {
+	const [
+		isProgressQuery,
+		{ loading: isProgressLoading, data: isProgressData },
+	] = useIsProgressLazyQuery()
+
 	const { loading: sourceLoading, data: sourceData } = useGetSourceByMediaQuery(
 		{
 			variables: {
@@ -78,6 +84,19 @@ export const Navbar: React.FC<NavbarProps> = ({ data, subtitle }) => {
 					mediaId: data.id,
 					type: SourceType.Movie,
 				},
+			},
+			onCompleted(data) {
+				if (
+					data.getSourceByMedia &&
+					data.getSourceByMedia !== null &&
+					data.getSourceByMedia.length !== 0
+				) {
+					isProgressQuery({
+						variables: {
+							options: { mediaSourceId: data.getSourceByMedia[0].id },
+						},
+					})
+				}
 			},
 		}
 	)
@@ -115,7 +134,14 @@ export const Navbar: React.FC<NavbarProps> = ({ data, subtitle }) => {
 											href={`/player/${sourceData?.getSourceByMedia[0].id}?from=/media/${data.url}`}
 											passHref
 										>
-											<NavbarLink>Play Movie</NavbarLink>
+											{!isProgressLoading &&
+											isProgressData &&
+											isProgressData.isProgress &&
+											isProgressData.isProgress !== null ? (
+												<NavbarLink>Resume Movie</NavbarLink>
+											) : (
+												<NavbarLink>Play Movie</NavbarLink>
+											)}
 										</Link>
 									)}
 								</>

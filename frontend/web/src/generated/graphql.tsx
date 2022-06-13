@@ -35,6 +35,7 @@ export type Collection = {
   __typename?: 'Collection';
   available_from: Scalars['String'];
   description: Scalars['String'];
+  featured: Scalars['Boolean'];
   id: Scalars['ID'];
   medias: Array<MediaCollection>;
   title: Scalars['String'];
@@ -71,6 +72,10 @@ export type Homepage = {
   type: Scalars['String'];
 };
 
+export type IsProgressInput = {
+  mediaSourceId: Scalars['ID'];
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -81,6 +86,7 @@ export type Media = {
   available_from: Scalars['String'];
   casts: Array<Cast>;
   country_of_origin: Scalars['String'];
+  featured: Scalars['Boolean'];
   id: Scalars['ID'];
   isAvailable: Scalars['Boolean'];
   keywords: Array<Scalars['String']>;
@@ -167,6 +173,7 @@ export type Mutation = {
   register?: Maybe<User>;
   removePermission: Scalars['Boolean'];
   toggleWatchlist: Scalars['Boolean'];
+  updateProgress: Progress;
 };
 
 
@@ -239,6 +246,11 @@ export type MutationToggleWatchlistArgs = {
   options: WatchlistInput;
 };
 
+
+export type MutationUpdateProgressArgs = {
+  options: ProgressInput;
+};
+
 export type PermissionInput = {
   id: Scalars['ID'];
   permission: Scalars['String'];
@@ -261,6 +273,23 @@ export type PersonInput = {
   url: Scalars['String'];
 };
 
+export type Progress = {
+  __typename?: 'Progress';
+  duration: Scalars['Int'];
+  finished: Scalars['Boolean'];
+  id: Scalars['ID'];
+  mediaSource: MediaSource;
+  mediaSourceId: Scalars['ID'];
+  progress: Scalars['Int'];
+  userId: Scalars['ID'];
+};
+
+export type ProgressInput = {
+  duration: Scalars['Int'];
+  mediaSourceId: Scalars['ID'];
+  progress: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getAllCast: Array<Cast>;
@@ -274,6 +303,7 @@ export type Query = {
   getMediaById?: Maybe<Media>;
   getMediaByUrl?: Maybe<Media>;
   getPersonByUrl?: Maybe<Person>;
+  getProgress: Array<Progress>;
   getSourceById?: Maybe<MediaSource>;
   getSourceByMedia?: Maybe<Array<MediaSource>>;
   getStudioByUrl?: Maybe<Studio>;
@@ -281,6 +311,7 @@ export type Query = {
   getWatchlist: Array<Watchlist>;
   hello: Scalars['String'];
   homepage: Array<Homepage>;
+  isProgress?: Maybe<Progress>;
   isWatchlist: Scalars['Boolean'];
   me?: Maybe<User>;
 };
@@ -323,6 +354,11 @@ export type QueryGetStudioByUrlArgs = {
 
 export type QueryGetUserByEmailArgs = {
   options: GetUserByEmailInput;
+};
+
+
+export type QueryIsProgressArgs = {
+  options: IsProgressInput;
 };
 
 
@@ -446,6 +482,13 @@ export type ToggleWatchlistMutationVariables = Exact<{
 
 export type ToggleWatchlistMutation = { __typename?: 'Mutation', toggleWatchlist: boolean };
 
+export type UpdateProgressMutationVariables = Exact<{
+  options: ProgressInput;
+}>;
+
+
+export type UpdateProgressMutation = { __typename?: 'Mutation', updateProgress: { __typename?: 'Progress', id: string, duration: number, progress: number, finished: boolean, mediaSource: { __typename?: 'MediaSource', id: string, title: string } } };
+
 export type HomepageQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -502,6 +545,18 @@ export type GetWatchlistQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetWatchlistQuery = { __typename?: 'Query', getWatchlist: Array<{ __typename?: 'Watchlist', id: string, media: { __typename?: 'Media', id: string, url: string } }> };
+
+export type GetProgressQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProgressQuery = { __typename?: 'Query', getProgress: Array<{ __typename?: 'Progress', id: string, duration: number, progress: number, finished: boolean, mediaSource: { __typename?: 'MediaSource', id: string, title: string, thumbnail: string, mediaId: string } }> };
+
+export type IsProgressQueryVariables = Exact<{
+  options: IsProgressInput;
+}>;
+
+
+export type IsProgressQuery = { __typename?: 'Query', isProgress?: { __typename?: 'Progress', id: string, duration: number, progress: number, finished: boolean, mediaSource: { __typename?: 'MediaSource', id: string, title: string } } | null };
 
 export const MediaFragmentDoc = gql`
     fragment Media on Media {
@@ -645,6 +700,46 @@ export function useToggleWatchlistMutation(baseOptions?: Apollo.MutationHookOpti
 export type ToggleWatchlistMutationHookResult = ReturnType<typeof useToggleWatchlistMutation>;
 export type ToggleWatchlistMutationResult = Apollo.MutationResult<ToggleWatchlistMutation>;
 export type ToggleWatchlistMutationOptions = Apollo.BaseMutationOptions<ToggleWatchlistMutation, ToggleWatchlistMutationVariables>;
+export const UpdateProgressDocument = gql`
+    mutation UpdateProgress($options: ProgressInput!) {
+  updateProgress(options: $options) {
+    id
+    mediaSource {
+      id
+      title
+    }
+    duration
+    progress
+    finished
+  }
+}
+    `;
+export type UpdateProgressMutationFn = Apollo.MutationFunction<UpdateProgressMutation, UpdateProgressMutationVariables>;
+
+/**
+ * __useUpdateProgressMutation__
+ *
+ * To run a mutation, you first call `useUpdateProgressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProgressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProgressMutation, { data, loading, error }] = useUpdateProgressMutation({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useUpdateProgressMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProgressMutation, UpdateProgressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProgressMutation, UpdateProgressMutationVariables>(UpdateProgressDocument, options);
+      }
+export type UpdateProgressMutationHookResult = ReturnType<typeof useUpdateProgressMutation>;
+export type UpdateProgressMutationResult = Apollo.MutationResult<UpdateProgressMutation>;
+export type UpdateProgressMutationOptions = Apollo.BaseMutationOptions<UpdateProgressMutation, UpdateProgressMutationVariables>;
 export const HomepageDocument = gql`
     query Homepage {
   homepage {
@@ -1022,3 +1117,88 @@ export function useGetWatchlistLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetWatchlistQueryHookResult = ReturnType<typeof useGetWatchlistQuery>;
 export type GetWatchlistLazyQueryHookResult = ReturnType<typeof useGetWatchlistLazyQuery>;
 export type GetWatchlistQueryResult = Apollo.QueryResult<GetWatchlistQuery, GetWatchlistQueryVariables>;
+export const GetProgressDocument = gql`
+    query GetProgress {
+  getProgress {
+    id
+    mediaSource {
+      id
+      title
+      thumbnail
+      mediaId
+    }
+    duration
+    progress
+    finished
+  }
+}
+    `;
+
+/**
+ * __useGetProgressQuery__
+ *
+ * To run a query within a React component, call `useGetProgressQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProgressQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProgressQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetProgressQuery(baseOptions?: Apollo.QueryHookOptions<GetProgressQuery, GetProgressQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProgressQuery, GetProgressQueryVariables>(GetProgressDocument, options);
+      }
+export function useGetProgressLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProgressQuery, GetProgressQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProgressQuery, GetProgressQueryVariables>(GetProgressDocument, options);
+        }
+export type GetProgressQueryHookResult = ReturnType<typeof useGetProgressQuery>;
+export type GetProgressLazyQueryHookResult = ReturnType<typeof useGetProgressLazyQuery>;
+export type GetProgressQueryResult = Apollo.QueryResult<GetProgressQuery, GetProgressQueryVariables>;
+export const IsProgressDocument = gql`
+    query IsProgress($options: IsProgressInput!) {
+  isProgress(options: $options) {
+    id
+    mediaSource {
+      id
+      title
+    }
+    duration
+    progress
+    finished
+  }
+}
+    `;
+
+/**
+ * __useIsProgressQuery__
+ *
+ * To run a query within a React component, call `useIsProgressQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsProgressQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsProgressQuery({
+ *   variables: {
+ *      options: // value for 'options'
+ *   },
+ * });
+ */
+export function useIsProgressQuery(baseOptions: Apollo.QueryHookOptions<IsProgressQuery, IsProgressQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsProgressQuery, IsProgressQueryVariables>(IsProgressDocument, options);
+      }
+export function useIsProgressLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsProgressQuery, IsProgressQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsProgressQuery, IsProgressQueryVariables>(IsProgressDocument, options);
+        }
+export type IsProgressQueryHookResult = ReturnType<typeof useIsProgressQuery>;
+export type IsProgressLazyQueryHookResult = ReturnType<typeof useIsProgressLazyQuery>;
+export type IsProgressQueryResult = Apollo.QueryResult<IsProgressQuery, IsProgressQueryVariables>;

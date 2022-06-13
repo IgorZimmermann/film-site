@@ -1,7 +1,12 @@
-import React, { createRef, useEffect, useState } from 'react'
+import React, { createRef, useCallback, useEffect, useState } from 'react'
 import { useFullscreen } from 'rooks'
 import styled from 'styled-components'
-import { MediaSource } from '../../generated/graphql'
+import {
+	MediaSource,
+	SourceType,
+	useIsProgressQuery,
+	useUpdateProgressMutation,
+} from '../../generated/graphql'
 
 const PlayerWrapper = styled.div`
 	position: fixed;
@@ -166,28 +171,14 @@ export const Player: React.FC<PlayerProps> = ({ playerSource, onExit }) => {
 	const [showSubtitles, setShowSubtitles] = useState<boolean>(false)
 	const vidRef = createRef<HTMLVideoElement>()
 
-	useEffect(() => {
-		let controlsTimeout = setTimeout(() => {
-			!paused && setShowControls(false)
-		}, 3000)
-
-		document.addEventListener('mousemove', () => {
-			clearTimeout(controlsTimeout)
-			setShowControls(true)
-			controlsTimeout = setTimeout(() => {
-				!paused && setShowControls(false)
-			}, 3000)
-		})
-
-		if (vidRef.current) {
-			vidRef.current.addEventListener('play', () => {
-				setPaused(false)
-			})
-			vidRef.current.addEventListener('pause', () => {
-				setPaused(true)
-			})
-		}
-	}, [setShowControls, paused, vidRef])
+	const [updateProgress] = useUpdateProgressMutation()
+	const { data: isProgress } = useIsProgressQuery({
+		variables: {
+			options: {
+				mediaSourceId: playerSource.id,
+			},
+		},
+	})
 
 	const playerRef = createRef<HTMLDivElement>()
 	const handle = useFullscreen()
@@ -199,12 +190,6 @@ export const Player: React.FC<PlayerProps> = ({ playerSource, onExit }) => {
 			} else {
 				vidRef.current.pause()
 			}
-		}
-	}
-
-	function seek(time: number) {
-		if (vidRef.current) {
-			vidRef.current.currentTime = time
 		}
 	}
 
@@ -253,6 +238,80 @@ export const Player: React.FC<PlayerProps> = ({ playerSource, onExit }) => {
 			handle?.request(playerRef.current!)
 		}
 	}
+
+	const seek = useCallback(
+		(time: number) => {
+			if (vidRef.current) {
+				vidRef.current.currentTime = time
+			}
+		},
+		[vidRef]
+	)
+
+	useEffect(() => {
+		let controlsTimeout = setTimeout(() => {
+			!paused && setShowControls(false)
+		}, 3000)
+
+		document.addEventListener('mousemove', () => {
+			clearTimeout(controlsTimeout)
+			setShowControls(true)
+			controlsTimeout = setTimeout(() => {
+				!paused && setShowControls(false)
+			}, 3000)
+		})
+
+		let trackInterval: NodeJS.Timer
+
+		if (vidRef.current) {
+			vidRef.current.addEventListener('play', () => {
+				setPaused(false)
+			})
+			vidRef.current.addEventListener('pause', () => {
+				setPaused(true)
+			})
+			if (isProgress?.isProgress && isProgress?.isProgress !== null) {
+				vidRef.current.addEventListener('loadedmetadata', () => {
+					seek(isProgress.isProgress?.progress!)
+				})
+			}
+
+			if (playerSource.type === SourceType.Movie) {
+				trackInterval = setInterval(async () => {
+					if (!vidRef.current?.paused) {
+						const response = await updateProgress({
+							variables: {
+								options: {
+									duration: vidRef.current?.duration
+										? Math.floor(vidRef.current?.duration)
+										: 1000,
+									progress: vidRef.current?.currentTime
+										? Math.floor(vidRef.current?.currentTime)
+										: 0,
+									mediaSourceId: playerSource.id,
+								},
+							},
+						})
+						if (response.data && response.data.updateProgress.finished) {
+							clearInterval(trackInterval)
+						}
+					}
+				}, 5000)
+			}
+		}
+
+		return () => {
+			clearInterval(trackInterval)
+		}
+	}, [
+		setShowControls,
+		paused,
+		vidRef,
+		updateProgress,
+		playerSource,
+		isProgress,
+		seek,
+	])
 
 	if (playerSource) {
 		return (

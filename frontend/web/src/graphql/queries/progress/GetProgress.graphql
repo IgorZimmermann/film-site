@@ -1,0 +1,14 @@
+query GetProgress {
+	getProgress {
+		id
+		mediaSource {
+			id
+			title
+			thumbnail
+			mediaId
+		}
+		duration
+		progress
+		finished
+	}
+}

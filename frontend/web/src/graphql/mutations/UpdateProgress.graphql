@@ -1,0 +1,12 @@
+mutation UpdateProgress($options: ProgressInput!) {
+	updateProgress(options: $options) {
+		id
+		mediaSource {
+			id
+			title
+		}
+		duration
+		progress
+		finished
+	}
+}

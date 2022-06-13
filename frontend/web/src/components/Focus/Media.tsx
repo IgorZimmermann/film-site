@@ -8,6 +8,7 @@ import {
 	useGetIsWatchlistQuery,
 	useGetMediaByIdQuery,
 	useGetSourceByMediaQuery,
+	useIsProgressLazyQuery,
 	useToggleWatchlistMutation,
 } from '../../generated/graphql'
 import { Content } from './Content'
@@ -102,6 +103,11 @@ export const Media: React.FC<MediaProps> = ({ id, small, collection }) => {
 		},
 	})
 
+	const [
+		isProgressQuery,
+		{ loading: isProgressLoading, data: isProgressData },
+	] = useIsProgressLazyQuery()
+
 	const { loading: sourceLoading, data: sourceData } = useGetSourceByMediaQuery(
 		{
 			variables: {
@@ -109,6 +115,19 @@ export const Media: React.FC<MediaProps> = ({ id, small, collection }) => {
 					mediaId: id,
 					type: SourceType.Movie,
 				},
+			},
+			onCompleted(data) {
+				if (
+					data.getSourceByMedia &&
+					data.getSourceByMedia !== null &&
+					data.getSourceByMedia.length !== 0
+				) {
+					isProgressQuery({
+						variables: {
+							options: { mediaSourceId: data.getSourceByMedia[0].id },
+						},
+					})
+				}
 			},
 		}
 	)
@@ -154,7 +173,18 @@ export const Media: React.FC<MediaProps> = ({ id, small, collection }) => {
 														href={`/player/${sourceData?.getSourceByMedia[0].id}?from=/media/${data?.getMediaById?.url}`}
 														passHref
 													>
-														<MetaButton theme={'light'}>Play Movie</MetaButton>
+														{!isProgressLoading &&
+														isProgressData &&
+														isProgressData.isProgress &&
+														isProgressData.isProgress !== null ? (
+															<MetaButton theme={'light'}>
+																Resume Movie
+															</MetaButton>
+														) : (
+															<MetaButton theme={'light'}>
+																Play Movie
+															</MetaButton>
+														)}
 													</Link>
 												)}
 											</>

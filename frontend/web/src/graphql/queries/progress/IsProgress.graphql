@@ -1,0 +1,12 @@
+query IsProgress($options: IsProgressInput!) {
+	isProgress(options: $options) {
+		id
+		mediaSource {
+			id
+			title
+		}
+		duration
+		progress
+		finished
+	}
+}

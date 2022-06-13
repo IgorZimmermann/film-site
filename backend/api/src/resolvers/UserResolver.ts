@@ -155,6 +155,7 @@ export class UserResolver {
 		collections.forEach((x) =>
 			homepage.push({ type: 'collection', data: x.id })
 		)
+		homepage.splice(1, 0, { type: 'resume', data: '' })
 		return homepage
 	}
 
